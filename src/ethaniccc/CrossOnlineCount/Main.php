@@ -27,7 +27,7 @@ class Main extends PluginBase implements Listener{
         $this->getLogger()->info(TextFormat::GREEN . "CrossOnlineCount has been enabled!");
         $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function(int $currentTick) : void{
                $slapper = $this->getServer()->getPluginManager()->getPlugin("Slapper");
-               if($slapper === null || $slapper->isDisabled()){
+               if($slapper === null){
                    $this->getServer()->getAsyncPool()->submitTask(new InstallSlapper());
                    $this->getLogger()->notice("The Slapper plugin is not installed, we are installing it for you.");
                    $this->getLogger()->notice("After the plugin is installed, your server will shutdown - please turn it on again.");
