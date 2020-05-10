@@ -1,0 +1,6 @@
+---
+name: CrossOnlineCount
+version: 2.0
+main: ethaniccc\CrossOnlineCount\Main
+api: 3.12.0
+...
