@@ -1,7 +1,7 @@
 # CrossOnlineCount
 Get the players of another server with Slapper!
 ## Information
-This is made from @jasonwynn10, but updated for the latest API and uses Async Tasks to not lag the server.
+This is made from jasonwynn10, but updated for the latest API and uses Async Tasks to not lag the server.
 ## Usage
 On your slapper, just put the IP and port of the server like `IP:Port`. Here is an example:
 
