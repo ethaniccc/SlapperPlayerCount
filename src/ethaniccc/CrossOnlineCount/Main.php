@@ -74,7 +74,7 @@ class Main extends PluginBase implements Listener{
 		$lines = explode("\n", $entity->getNameTag());
 		if($this->isValidIP($lines[0]) or $this->is_valid_domain_name($lines[0])) {
 			$entity->namedtag->setString("server", $lines[0]);
-			$this->update();
+			$this->updateSlapper();
 		}
     }
     
