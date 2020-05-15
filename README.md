@@ -3,8 +3,10 @@ Get the players of another server with Slapper!
 ## Information
 This is made from jasonwynn10, but updated for the latest API and uses Async Tasks to not lag the server.
 ## Usage
-On your slapper, just put the IP and port of the server like `IP:Port`. Here is an example:
+On your slapper, just put the IP and port of the server like `IP:Port`.
 
-/slapper create human KitPvP Server{line}127.0.0.1:19132
+![An example:](https://drive.google.com/file/d/1Tp9sWTgKvN0d_U_MrEXMwDDjPNnjd654/view?usp=sharing)
 
-When you create the slapper, it will now replace the IP and port with the amount online, such as `1 online`. If the plugin cannot query the server, it will replace the IP and port with `Server Offline`.
+![Result](https://drive.google.com/file/d/1Tl8SgQSItC7WRLwLg2A49G19mr-EhrhE/view?usp=sharing)
+
+Easy to use, and super simple. Because this uses a special type of task (AsyncTask), this won't lag your server, and you're good to go!
