@@ -67,6 +67,7 @@ class Main extends PluginBase implements Listener{
             $server = explode(":", $entity->namedtag->getString("server", ""));
             $ip = $server[0];
             if(!isset($server[1])) $port = 19132;
+            else $port = $server[1];
             if($ip == Internet::getIp()) $ip = "127.0.0.1";
 					  $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId()));
 				  }
