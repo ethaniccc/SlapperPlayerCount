@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace ethaniccc\CrossOnlineCount;
 
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Internet;
+use pocketmine\entity\Entity;
 use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
 use pocketmine\scheduler\ClosureTask;
@@ -42,16 +44,16 @@ class Main extends PluginBase implements Listener{
     }
 
     public function onDisable(){
-        foreach($this->getServer()->getLevels() as $level) {
-			foreach($level->getEntities() as $entity) {
-				if(!empty($entity->namedtag->getString("server", ""))) {
-					$lines = explode("\n", $entity->getNameTag());
-					$lines[0] = $entity->namedtag->getString("server", "");
-					$nametag = implode("\n", $lines);
-					$entity->setNameTag($nametag);
-				}
-			}
-		}
+      foreach($this->getServer()->getLevels() as $level) {
+			  foreach($level->getEntities() as $entity) {
+				  if(!empty($entity->namedtag->getString("server", ""))) {
+					  $lines = explode("\n", $entity->getNameTag());
+					  $lines[1] = $entity->namedtag->getString("server", "");
+					  $nametag = implode("\n", $lines);
+					  $entity->setNameTag($nametag);
+				  }
+			  }
+		  }
     }
 
     public static function getMain() {
@@ -59,40 +61,43 @@ class Main extends PluginBase implements Listener{
     }
 
     public function updateSlapper(){
-        foreach($this->getServer()->getLevels() as $level) {
-			foreach($level->getEntities() as $entity) {
-				if(!empty($entity->namedtag->getString("server", ""))) {
-                    $server = explode(":", $entity->namedtag->getString("server", ""));
-					$this->getServer()->getAsyncPool()->submitTask(new QueryServer($server[0], $server[1], $entity->getId()));
-				}
-			}
-		}
+      foreach($this->getServer()->getLevels() as $level) {
+			  foreach($level->getEntities() as $entity) {
+				  if(!empty($entity->namedtag->getString("server", ""))) {
+            $server = explode(":", $entity->namedtag->getString("server", ""));
+            $ip = $server[0];
+            if(!isset($server[1])) $port = 19132;
+            if($ip == Internet::getIp()) $ip = "127.0.0.1";
+					  $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId()));
+				  }
+			  }
+		  }
     }
 
     public function onSlapperCreate(SlapperCreationEvent $ev) {
-		$entity = $ev->getEntity();
-		$lines = explode("\n", $entity->getNameTag());
-		if($this->isValidIP($lines[0]) or $this->is_valid_domain_name($lines[0])) {
-			$entity->namedtag->setString("server", $lines[0]);
-			$this->updateSlapper();
-		}
+	  	$entity = $ev->getEntity();
+      $lines = explode("\n", $entity->getNameTag());
+		  if($this->isValidIP($lines[1]) or $this->is_valid_domain_name($lines[1])){
+        $entity->namedtag->setString("server", $lines[1]);
+			  $this->updateSlapper();
+		  }
     }
     
     public function onSlapperDelete(SlapperDeletionEvent $ev) {
-		$entity = $ev->getEntity();
-		if(!empty($entity->namedtag->getString("server", ""))) {
-			$entity->namedtag->removeTag("server");
-		}
+		  $entity = $ev->getEntity();
+		  if(!empty($entity->namedtag->getString("server", ""))) {
+			  $entity->namedtag->removeTag("server");
+		  }
     }
 
     public function is_valid_domain_name(string $domain_name) {
-		return (preg_match("/([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*:(\d{1,5})/i", $domain_name) //valid chars check
-		        and preg_match("/.{1,253}/", $domain_name) //overall length check
-		        and preg_match("/[^\.]{1,63}(\.[^\.]{1,63})*/", $domain_name)); //length of each label
+		  return (preg_match("/([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*:(\d{1,5})/i", $domain_name) //valid chars check
+		  and preg_match("/.{1,253}/", $domain_name) //overall length check
+		  and preg_match("/[^\.]{1,63}(\.[^\.]{1,63})*/", $domain_name)); //length of each label
     }
     
     public function isValidIP(string $ip) {
-		return (preg_match("/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})/", $ip) !== false);
-	}
+		  return (preg_match("/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})/", $ip) !== false);
+	  }
 
 }

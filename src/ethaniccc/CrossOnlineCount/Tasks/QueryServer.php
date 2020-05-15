@@ -37,12 +37,12 @@ class QueryServer extends AsyncTask{
         if($entity === null) return;
         if($this->online !== -9999){
             $lines = explode("\n", $entity->getNameTag());
-			$lines[0] = TextFormat::YELLOW.$this->online." Online".TextFormat::WHITE;
+			$lines[1] = TextFormat::YELLOW.$this->online." Online".TextFormat::WHITE;
 			$nametag = implode("\n", $lines);
 			$entity->setNameTag($nametag);
         } else {
             $lines = explode("\n", $entity->getNameTag());
-			$lines[0] = TextFormat::DARK_RED."Server Offline".TextFormat::WHITE;
+			$lines[1] = TextFormat::DARK_RED."Server Offline".TextFormat::WHITE;
 			$nametag = implode("\n", $lines);
 			$entity->setNameTag($nametag);
         }
