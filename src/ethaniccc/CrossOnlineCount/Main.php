@@ -65,11 +65,17 @@ class Main extends PluginBase implements Listener{
 			  foreach($level->getEntities() as $entity) {
 				  if(!empty($entity->namedtag->getString("server", ""))) {
             $server = explode(":", $entity->namedtag->getString("server", ""));
+            if(!$this->is_valid_domain_name($server[0]) && !$this->isValidIP($server[0])) $do = false;
+            else {
+                if(!isset($server[1])) $server[1] = 0;
+                if((int) $server[1] === 0) $do = false;
+                else $do = true;
+            }
             $ip = $server[0];
+            if($ip == Internet::getIp()) $ip = "127.0.0.1";
             if(!isset($server[1])) $port = 19132;
             else $port = $server[1];
-            if($ip == Internet::getIp()) $ip = "127.0.0.1";
-					  $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId()));
+					if($do === true) $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId()));
 				  }
 			  }
 		  }
