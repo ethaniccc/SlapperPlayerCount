@@ -5,8 +5,8 @@ This is made from jasonwynn10, but updated for the latest API and uses Async Tas
 ## Usage
 On your slapper, just put the IP and port of the server like `IP:Port`.
 
-![An example:](https://drive.google.com/file/d/1Tp9sWTgKvN0d_U_MrEXMwDDjPNnjd654/view?usp=sharing)
+![An example:](https://github.com/ethaniccc/CrossOnlineCount/blob/master/Screenshot_20200515-143428.png)
 
-![Result](https://drive.google.com/file/d/1Tl8SgQSItC7WRLwLg2A49G19mr-EhrhE/view?usp=sharing)
+![Result](https://github.com/ethaniccc/CrossOnlineCount/blob/master/Screenshot_20200515-143435.png)
 
 Easy to use, and super simple. Because this uses a special type of task (AsyncTask), this won't lag your server, and you're good to go!
