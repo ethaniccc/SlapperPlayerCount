@@ -26,7 +26,6 @@ class Main extends PluginBase implements Listener{
 
     public function onEnable(){
         self::$instance = $this;
-        $this->getLogger()->info(TextFormat::GREEN . "CrossOnlineCount has been enabled!");
         $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function(int $currentTick) : void{
                $slapper = $this->getServer()->getPluginManager()->getPlugin("Slapper");
                if($slapper === null){
