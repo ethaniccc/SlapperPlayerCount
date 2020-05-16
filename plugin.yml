@@ -1,6 +1,7 @@
 ---
 name: SlapperPlayerCount
-version: 2.0
+version: 2.0.0
 main: ethaniccc\CrossOnlineCount\Main
+description: Get the amount of online players using the Slapper plugin!
 api: 3.12.0
 ...
