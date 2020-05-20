@@ -66,7 +66,7 @@ class Main extends PluginBase implements Listener{
 			  foreach($level->getEntities() as $entity) {
 				  if(!empty($entity->namedtag->getString("server", ""))) {
                     $server = explode(":", $entity->namedtag->getString("server", ""));
-                    if(!empty($server[0])){
+                    if(isset($server[0])){
                         switch($server[0]){
                             case "server":
                                 if(!isset($server[1])) $ip = 0;
@@ -96,6 +96,9 @@ class Main extends PluginBase implements Listener{
                                     $nametag = implode("\n", $lines);
 			                        $entity->setNameTag($nametag);
                                 }
+                            break;
+                            default:
+
                             break;
                         }
                     }
