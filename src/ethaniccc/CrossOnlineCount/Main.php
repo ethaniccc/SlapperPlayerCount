@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace ethaniccc\CrossOnlineCount;
 
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
 use pocketmine\utils\Internet;
 use pocketmine\entity\Entity;
+use pocketmine\level\Level;
 use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
 use pocketmine\scheduler\ClosureTask;
@@ -63,18 +65,40 @@ class Main extends PluginBase implements Listener{
       foreach($this->getServer()->getLevels() as $level) {
 			  foreach($level->getEntities() as $entity) {
 				  if(!empty($entity->namedtag->getString("server", ""))) {
-            $server = explode(":", $entity->namedtag->getString("server", ""));
-            if(!$this->is_valid_domain_name($server[0]) && !$this->isValidIP($server[0])) $do = false;
-            else {
-                if(!isset($server[1])) $server[1] = 0;
-                if((int) $server[1] === 0) $do = false;
-                else $do = true;
-            }
-            $ip = $server[0];
-            if($ip == Internet::getIp()) $ip = "127.0.0.1";
-            if(!isset($server[1])) $port = 19132;
-            else $port = $server[1];
-					if($do === true) $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId()));
+                    $server = explode(":", $entity->namedtag->getString("server", ""));
+                    if(!empty($server[0])){
+                        switch($server[0]){
+                            case "server":
+                                if(!isset($server[1])) $ip = 0;
+                                else $ip = $server[1];
+                                if(!isset($server[2])) $port = 19132;
+                                else $port = $server[2];
+                                if($ip == 0) $do = false;
+                                else $do = true;
+                                if($do === true) $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId(), $this->getConfig()->get("server_online_message"), $this->getConfig()->get("server_offline_message")));
+                            break;
+                            case "world":
+                                if(!isset($server[1])) $world = $sender->getLevel();
+                                else $world = $this->getServer()->getLevelByName($server[1]);
+                                if($world === null) $do = false;
+                                else $do = true;
+                                if($do === true){
+                                    $lines = explode("\n", $entity->getNameTag());
+                                    $base = $this->getConfig()->get("players_world_message");
+                                    $message = str_replace("{playing}", count($world->getPlayers()), $base);
+                                    $lines[1] = $message;
+                                    $nametag = implode("\n", $lines);
+			                        $entity->setNameTag($nametag);
+                                } else {
+                                    $lines = explode("\n", $entity->getNameTag());
+                                    $message = $this->getConfig()->get("world_error_message");
+                                    $lines[1] = $message;
+                                    $nametag = implode("\n", $lines);
+			                        $entity->setNameTag($nametag);
+                                }
+                            break;
+                        }
+                    }
 				  }
 			  }
 		  }
@@ -82,11 +106,9 @@ class Main extends PluginBase implements Listener{
 
     public function onSlapperCreate(SlapperCreationEvent $ev) {
 	  	$entity = $ev->getEntity();
-      $lines = explode("\n", $entity->getNameTag());
-		  if($this->isValidIP($lines[1]) or $this->is_valid_domain_name($lines[1])){
-        $entity->namedtag->setString("server", $lines[1]);
-			  $this->updateSlapper();
-		  }
+        $lines = explode("\n", $entity->getNameTag());
+        if(isset($lines[1])) $entity->namedtag->setString("server", $lines[1]);
+		$this->updateSlapper();
     }
     
     public function onSlapperDelete(SlapperDeletionEvent $ev) {

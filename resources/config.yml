@@ -1,0 +1,28 @@
+# Welcome to the SlapperPlayerCount config!
+# Feel free to go see my GitHub for more plugins!
+# https://www.github.com/ethaniccc
+
+############### Server ###############
+
+# This is the message you want when you are getting the players of another server
+# and the server is online. You can use {online} for the amount of online players
+# and {max_online} for the maxinum online players.
+
+server_online_message: "§eOnline: §l§a{online}§r§e/§l§a{max_online}"
+
+# This is the message you want when you are getting the players of another server
+# and the server does not respond to the query.
+
+server_offline_message: "§l§4Server Offline"
+
+############### World ###############
+
+# This is the message you want when you are getting the amount of players on a world
+# You can use {playing} to show the amount of players on the world.
+
+players_world_message: "§l§e{playing} playing"
+
+# This is the message you want when something goes wrong and we can't find the world
+
+world_error_message: "§l§4World Not Found!"
+
