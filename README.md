@@ -30,6 +30,7 @@ Then you get the amount of players on the world:
 (**screenshot goes here lol**)
 
 Hope this helped :D
+
 ~ ethaniccc
 
 ### Server Query Usage
@@ -51,4 +52,5 @@ Then you get the amount of players on the server:
 ![Result](https://github.com/ethaniccc/CrossOnlineCount/blob/master/Screenshot_20200515-143435.png)
 
 Hope this helped :D
+
 ~ ethaniccc
