@@ -30,8 +30,9 @@ class QueryServer extends AsyncTask{
     public function onRun(){
         try{
             $online = PMQuery::query($this->ip, $this->port)['Players'];
-            $maxonline = PMQuery::query($this->ip, $this->port)['Players'];
+            $maxonline = PMQuery::query($this->ip, $this->port)['MaxPlayers'];
             $this->online = $online;
+            $this->max_online = $maxonline;
         } catch (PmQueryException $e){
             $this->online = -9999;
         }
