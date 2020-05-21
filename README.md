@@ -5,6 +5,7 @@ Get the amount of players on a world or on a server with SlapperPlayerCount!
 ### 2.1
 - Add config
 - Add configurable nametags
+- Add a miscellaneous feature in config
 - Add support for showing amount of players in a world
 ### 2.0
 - Inital release

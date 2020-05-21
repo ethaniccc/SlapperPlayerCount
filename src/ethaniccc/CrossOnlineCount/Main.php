@@ -8,6 +8,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\Internet;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Living;
 use pocketmine\level\Level;
 use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
@@ -19,6 +20,8 @@ use libpmquery\PMQuery;
 use libpmquery\PmQueryException;
 use slapper\events\SlapperCreationEvent;
 use slapper\events\SlapperDeletionEvent;
+use slapper\entities\SlapperEntity;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use ethaniccc\CrossOnlineCount\Tasks\InstallSlapper;
 use ethaniccc\CrossOnlineCount\Tasks\QueryServer;
 
@@ -78,9 +81,9 @@ class Main extends PluginBase implements Listener{
                                 if($do === true) $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId(), $this->getConfig()->get("server_online_message"), $this->getConfig()->get("server_offline_message")));
                             break;
                             case "world":
-                                if(!isset($server[1])) $world = $sender->getLevel();
+                                if(!isset($server[1])) $world = "aa46b8ednonono";
                                 else $world = $this->getServer()->getLevelByName($server[1]);
-                                if($world === null) $do = false;
+                                if($world === "aa46b8ednonono" || $world === null) $do = false;
                                 else $do = true;
                                 if($do === true){
                                     $lines = explode("\n", $entity->getNameTag());
@@ -105,6 +108,32 @@ class Main extends PluginBase implements Listener{
 				  }
 			  }
 		  }
+    }
+
+    public function onHitSlapper(EntityDamageByEntityEvent $event){
+        $entity = $event->getEntity();
+        $player = $event->getDamager();
+        if($entity instanceof SlapperEntity){
+
+            $nametag = explode("\n", $entity->getNameTag());
+
+            if(!isset($nametag[1])) return;
+
+            if($nametag[1] == $this->getConfig()->get("server_offline_message")){
+                if($this->getConfig()->get("server_offline_knockback") == true){
+                    $motion = $player->subtract($entity);
+                    $player->knockBack($entity, 0, $motion->x, $moition->z, $this->getConfig()->get("server_offline_knockback_amount"));
+                }
+            } 
+            
+            if($nametag[1] == $this->getConfig()->get("world_error_message")){
+                if($this->getConfig()->get("world_nofind_knockback") == true){
+                    $motion = $player->subtract($entity);
+                    $player->knockBack($entity, 0, $motion->x, $moition->z, $this->getConfig()->get("world_nofind_knockback_amount"));
+                }
+            }
+
+        }
     }
 
     public function onSlapperCreate(SlapperCreationEvent $ev) {

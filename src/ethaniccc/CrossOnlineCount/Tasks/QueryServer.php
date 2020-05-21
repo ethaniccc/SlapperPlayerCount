@@ -16,6 +16,7 @@ class QueryServer extends AsyncTask{
     private $port; //int
     private $entity; //entity
     private $online; //online amount
+    private $max_online; //max online amount
     private $online_message;
     private $offline_message;
 
@@ -44,8 +45,7 @@ class QueryServer extends AsyncTask{
         if($this->online !== -9999){
             $lines = explode("\n", $entity->getNameTag());
             $base = $this->online_message;
-            $base2 = str_replace("{online}", $this->online, $base);
-            $message = str_replace("{max_online}", $this->max_online, $base2);
+            $message = str_replace(["{online}", "{max_online}"], [$this->online, $this->max_online], $base);
             $lines[1] = $message;
 			$nametag = implode("\n", $lines);
 			$entity->setNameTag($nametag);
