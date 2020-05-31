@@ -82,7 +82,6 @@ class Main extends PluginBase implements Listener{
 			  foreach($level->getEntities() as $entity) {
 				  if(!empty($entity->namedtag->getString("server", ""))) {
                     $server = explode(":", $entity->namedtag->getString("server", ""));
-                    var_dump($server);
                     if(isset($server[0])){
                         if($server[0] === "server"){
                             if(empty($server[1])) $ip = "not_a_valid_ip";
@@ -98,7 +97,7 @@ class Main extends PluginBase implements Listener{
                             if($ip !== "not_a_valid_ip" && $port !== "invalid_port") $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId(), $this->getConfig()->get("server_online_message"), $this->getConfig()->get("server_offline_message")));
                         } elseif($server[0] === "world"){
                             if(empty($server[1])) $world = "this_is_an_invalid_world";
-                            else $world = $server[1];
+                            else $world = $this->getServer()->getLevelByName($server[1]);
                             if($world === null) $execute = false;
                             else $execute = true;
                             if($execute){

@@ -5,7 +5,6 @@ Get the amount of players on a world or on a server with SlapperPlayerCount!
 ### 2.1
 - Add config
 - Add configurable nametags
-- Add a miscellaneous feature in config
 - Add support for showing amount of players in a world
 ### 2.0
 - Inital release
@@ -27,9 +26,10 @@ From here, you want to seperate the amount of players from the name, so you woul
 Now, since you want to get the amount of players on a world, you want to type in `world` and then the world name, spereated by a `:`.
 
 Example: `/slapper create human MiniGames{line}world:minigames`
+![WorldCommandExample](create_world_slapper.png)
 
 Then you get the amount of players on the world:
-(**screenshot goes here lol**)
+![WorldResult](world_slapper_result.png)
 
 Hope this helped :D
 
@@ -49,9 +49,10 @@ From here, you want to seperate the amount of players from the name, so you woul
 Now, since you want to get the amount of players on a server, you want to type in `server`, server ip, and the server port, spereated by a `:`.
 
 Example: `/slapper create human Versai{line}server:versai.pro:19132`
+![ServerCreateExample](create_server_slapper.png)
 
 Then you get the amount of players on the server:
-![Result](https://github.com/ethaniccc/CrossOnlineCount/blob/master/Screenshot_20200515-143435.png)
+![ServerResult](server_slapper_result.png)
 
 Hope this helped :D
 
