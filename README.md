@@ -51,9 +51,11 @@ From here, you want to seperate the amount of players from the name, so you woul
 Now, since you want to get the amount of players on a server, you want to type in `server`, server ip, and the server port, spereated by a `:`.
 
 Example: `/slapper create human Versai{line}server:versai.pro:19132`
+
 ![ServerCreateExample](create_server_slapper.png)
 
 Then you get the amount of players on the server:
+
 ![ServerResult](server_slapper_result.png)
 
 Hope this helped :D
