@@ -30,6 +30,7 @@ class Main extends PluginBase implements Listener{
     private static $instance;
 
     public function onEnable(){
+        var_dump($this->getConfig()->get("wpc_support"));
 
         /* The main goal right now is to actually
         implement the config correctly. */
@@ -57,6 +58,11 @@ class Main extends PluginBase implements Listener{
                    }), $updateTicks);
                    $this->getServer()->getPluginManager()->registerEvents($this, $this);
                }
+               $wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
+               if($wpc == null) return;
+               if($wpc->isDisabled()) return;
+               $this->getLogger()->notice("We detected that WorldPlayerCount was on your server and have automatically disabled it.");
+               $this->getServer()->getPluginManager()->disablePlugin($wpc);
         }), 100);
     }
 

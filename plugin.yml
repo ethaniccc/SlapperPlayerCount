@@ -1,7 +1,7 @@
 ---
 name: SlapperPlayerCount
-version: 2.1.0
+version: 2.1.1
 main: ethaniccc\CrossOnlineCount\Main
-description: Get the amount of players on a world or player using Slapper!
+description: Get the amount of players on a world or server using Slapper!
 api: 3.12.0
 ...

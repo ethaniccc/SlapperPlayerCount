@@ -2,6 +2,8 @@
 Get the amount of players on a world or on a server with SlapperPlayerCount!
 **NOTICE:** Server domains are for some reason no longer working, you must use the direct IP of the server you want to query.
 ## Updates
+### 2.1.1
+- Disable WorldPlayerCount if installed and enabled on the server.
 ### 2.1
 - Add config
 - Add configurable nametags
