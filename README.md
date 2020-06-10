@@ -1,12 +1,14 @@
 # SlapperPlayerCount
 Get the amount of players on a world or on a server with SlapperPlayerCount!
-**NOTICE:** Server domains are for some reason no longer working, you must use the direct IP of the server you want to query.
+
+**Important:** 2.1.2 brings support for WPC support, which you can either choose to enable or disable in the config. WPC has more features for world querying, check out the plugin by clicking [here](http://poggit.pmmp.io/p/WorldPlayerCount/)
 ## Updates
 ### 2.1.2
 - Add WorldPlayerCount support because it's unfair not giving people options.
 - Add version to config
 ### 2.1.1
 - ~~Disable WorldPlayerCount if installed and enabled on the server.~~
+
 **This version has been nulled**
 ### 2.1
 - Add config
