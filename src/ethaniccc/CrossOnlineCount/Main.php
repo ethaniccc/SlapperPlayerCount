@@ -33,7 +33,10 @@ class Main extends PluginBase implements Listener{
     public function onEnable(){
 
         @mkdir($this->getDataFolder());
-        $this->saveResource("config.yml");
+        if($this->getConfig()->get("version") !== "2.1.2"){
+            if(file_exists($this->getDataFolder() . "config.yml")) unlink($this->getDataFolder() . "config.yml");
+            $this->saveResource("config.yml");
+        }
 
         $updateTicks = (int) $this->getConfig()->get("update_ticks");
         if(!is_integer($updateTicks)){
@@ -56,14 +59,15 @@ class Main extends PluginBase implements Listener{
                    $this->getServer()->getPluginManager()->registerEvents($this, $this);
                }
                $wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
-               if($wpc == null) return;
-               if($wpc->isDisabled()) return;
-               if($this->getConfig()->get("wpc_support") == false)
-               $this->getLogger()->notice("WorldPlayerCount support is disabled in the config. Please enable it if you want to use WPC alongside SlapperPlayerCount.");
-               $this->getServer()->getPluginManager()->disablePlugin($wpc);
-               if($this->getConfig()->get("wpc_support") == true){
+               if($this->getConfig()->get("wpc_support") == false){
                    if($wpc !== null || !$wpc->isDisabled()){
-                    $this->getLogger()->notice("WorldPlayerCount support is enabled, but does not exist on your server.");
+                    $this->getLogger()->notice("WorldPlayerCount support is disabled in the config. Please enable it if you want to use WPC alongside SlapperPlayerCount.");
+                    $this->getServer()->getPluginManager()->disablePlugin($wpc);
+                   }
+               }
+               elseif($this->getConfig()->get("wpc_support") == true){
+                   if($wpc == null || $wpc->isDisabled()){
+                    $this->getLogger()->notice("WorldPlayerCount support is enabled, but does not exist (or is disabled) on your server.");
                    } else {
                     $this->getLogger()->notice("WorldPlayerCount support is enabled, and world querying will depend on it.");
                     $this->worldPlayerCount = true;

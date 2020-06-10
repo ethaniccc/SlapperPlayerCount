@@ -2,6 +2,9 @@
 # Feel free to go see my GitHub for more plugins!
 # https://www.github.com/ethaniccc
 
+# PLEASE DO NOT TOUCH THIS #
+version: 2.1.2
+
 ############### General ###############
 # Select how often the slapper should be updated. Please note that less ticks
 # can result in more lag. I reccommend using 100 ticks, which is equal to 5 seconds.
