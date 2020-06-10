@@ -54,15 +54,23 @@ class Main extends PluginBase implements Listener{
                    /* Update server details every 1 second. */
                    /* TODO: Make this configurable in the config! */
                    $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $currentTick) use($updateTicks) : void{
-                       $this->updateSlapper();
+                      $this->updateSlapper();
                    }), $updateTicks);
                    $this->getServer()->getPluginManager()->registerEvents($this, $this);
                }
                $wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
                if($wpc == null) return;
                if($wpc->isDisabled()) return;
-               $this->getLogger()->notice("We detected that WorldPlayerCount was on your server and have automatically disabled it.");
+               if($this->getConfig()->get("wpc_support") != true)
+               $this->getLogger()->notice("WorldPlayerCount support is disabled in the config. Please enable it if you want to use WPC alongside SlapperPlayerCount.");
                $this->getServer()->getPluginManager()->disablePlugin($wpc);
+               if($this->getConfig()->get("wpc_support") == true){
+                   if($wpc !== null || !$wpc->isDisabled()){
+                    $this->getLogger()->notice("WorldPlayerCount support is enabled, but does not exist on your server.");
+                   } else {
+                        
+                   }
+               }
         }), 100);
     }
 

@@ -23,6 +23,12 @@ server_offline_message: "§l§4Server Offline"
 
 ############### World ###############
 
+### WorldPlayerCount Support! ###
+# If this setting is enabled, world querying will be
+# from WorldPlayerCount, and all lower options
+# will be void. By default, WPC support is disabled.
+wpc_support: false
+
 # This is the message you want when you are getting the amount of players on a world
 # You can use {playing} to show the amount of players on the world.
 
