@@ -28,12 +28,9 @@ use ethaniccc\CrossOnlineCount\Tasks\QueryServer;
 class Main extends PluginBase implements Listener{
 
     private static $instance;
+    private $worldPlayerCount = null;
 
     public function onEnable(){
-        var_dump($this->getConfig()->get("wpc_support"));
-
-        /* The main goal right now is to actually
-        implement the config correctly. */
 
         @mkdir($this->getDataFolder());
         $this->saveResource("config.yml");
@@ -61,14 +58,15 @@ class Main extends PluginBase implements Listener{
                $wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
                if($wpc == null) return;
                if($wpc->isDisabled()) return;
-               if($this->getConfig()->get("wpc_support") != true)
+               if($this->getConfig()->get("wpc_support") == false)
                $this->getLogger()->notice("WorldPlayerCount support is disabled in the config. Please enable it if you want to use WPC alongside SlapperPlayerCount.");
                $this->getServer()->getPluginManager()->disablePlugin($wpc);
                if($this->getConfig()->get("wpc_support") == true){
                    if($wpc !== null || !$wpc->isDisabled()){
                     $this->getLogger()->notice("WorldPlayerCount support is enabled, but does not exist on your server.");
                    } else {
-                        
+                    $this->getLogger()->notice("WorldPlayerCount support is enabled, and world querying will depend on it.");
+                    $this->worldPlayerCount = true;
                    }
                }
         }), 100);
@@ -109,7 +107,7 @@ class Main extends PluginBase implements Listener{
                                 else $port = $server[2];
                             }
                             if($ip !== "not_a_valid_ip" && $port !== "invalid_port") $this->getServer()->getAsyncPool()->submitTask(new QueryServer($ip, $port, $entity->getId(), $this->getConfig()->get("server_online_message"), $this->getConfig()->get("server_offline_message")));
-                        } elseif($server[0] === "world"){
+                        } elseif($server[0] === "world" && $this->worldPlayerCount === null){
                             if(empty($server[1])) $world = "this_is_an_invalid_world";
                             else $world = $this->getServer()->getLevelByName($server[1]);
                             if($world === null) $execute = false;
