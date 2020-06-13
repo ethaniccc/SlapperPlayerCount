@@ -61,15 +61,14 @@ class Main extends PluginBase implements Listener{
                $wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
                if($this->getConfig()->get("wpc_support") == false){
                    if($wpc !== null || !$wpc->isDisabled()){
-                    $this->getLogger()->notice("WorldPlayerCount support is disabled in the config. Please enable it if you want to use WPC alongside SlapperPlayerCount.");
                     $this->getServer()->getPluginManager()->disablePlugin($wpc);
                    }
                }
                elseif($this->getConfig()->get("wpc_support") == true){
                    if($wpc == null || $wpc->isDisabled()){
-                    $this->getLogger()->notice("WorldPlayerCount support is enabled, but does not exist (or is disabled) on your server.");
+                    $this->getLogger()->debug("WorldPlayerCount support is enabled, but does not exist (or is disabled) on your server.");
                    } else {
-                    $this->getLogger()->notice("WorldPlayerCount support is enabled, and world querying will depend on it.");
+                    $this->getLogger()->debug("WorldPlayerCount support is enabled, and world querying will depend on it.");
                     $this->worldPlayerCount = true;
                    }
                }
