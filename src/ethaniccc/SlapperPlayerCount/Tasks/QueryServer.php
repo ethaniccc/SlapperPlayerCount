@@ -1,6 +1,6 @@
 <?php
 
-namespace ethaniccc\CrossOnlineCount\Tasks;
+namespace ethaniccc\SlapperPlayerCount\Tasks;
 
 use libpmquery\PMQuery;
 use libpmquery\PmQueryException;

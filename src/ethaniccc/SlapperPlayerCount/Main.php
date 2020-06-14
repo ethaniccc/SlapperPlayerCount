@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ethaniccc\CrossOnlineCount;
+namespace ethaniccc\SlapperPlayerCount;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
@@ -27,14 +27,12 @@ use ethaniccc\CrossOnlineCount\Tasks\QueryServer;
 
 class Main extends PluginBase implements Listener{
 
-    private static $instance;
     private $worldPlayerCount = null;
 
     public function onEnable(){
 
-        @mkdir($this->getDataFolder());
+        /* :eyes: */
         if($this->getConfig()->get("version") !== "2.1.2"){
-            if(file_exists($this->getDataFolder() . "config.yml")) unlink($this->getDataFolder() . "config.yml");
             $this->saveResource("config.yml");
         }
 
@@ -43,7 +41,6 @@ class Main extends PluginBase implements Listener{
             $this->getLogger()->notice("The amount of update ticks is not a whole number and therefore has defaulted to updating every 100 ticks (5 seconds)");
             $updateTicks = 100;
         }
-        self::$instance = $this;
         $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function(int $currentTick) use($updateTicks) : void{
                $slapper = $this->getServer()->getPluginManager()->getPlugin("Slapper");
                if($slapper === null){
@@ -51,8 +48,6 @@ class Main extends PluginBase implements Listener{
                    $this->getLogger()->notice("After the plugin is installed, your server will shutdown - please turn it on again.");
                    $this->getServer()->getAsyncPool()->submitTask(new InstallSlapper());
                 } else {
-                   /* Update server details every 1 second. */
-                   /* TODO: Make this configurable in the config! */
                    $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $currentTick) use($updateTicks) : void{
                       $this->updateSlapper();
                    }), $updateTicks);
@@ -86,10 +81,6 @@ class Main extends PluginBase implements Listener{
 				  }
 			  }
 		  }
-    }
-
-    public static function getMain() : Main{
-        return self::$instance;
     }
 
     public function updateSlapper() : void{
@@ -150,14 +141,14 @@ class Main extends PluginBase implements Listener{
 		  }
     }
 
-    public function is_valid_domain_name(string $domain_name) {
+    public function is_valid_domain_name(string $domain_name) : bool{
 		  return (preg_match("/([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*:(\d{1,5})/i", $domain_name) //valid chars check
 		  and preg_match("/.{1,253}/", $domain_name) //overall length check
 		  and preg_match("/[^\.]{1,63}(\.[^\.]{1,63})*/", $domain_name)); //length of each label
     }
     
-    public function isValidIP(string $ip) {
+    public function isValidIP(string $ip) : bool{
 		  return (preg_match("/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})/", $ip) !== false);
-	  }
+	}
 
 }
