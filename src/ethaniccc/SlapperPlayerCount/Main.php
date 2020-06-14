@@ -22,8 +22,8 @@ use slapper\events\SlapperCreationEvent;
 use slapper\events\SlapperDeletionEvent;
 use slapper\entities\SlapperEntity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use ethaniccc\CrossOnlineCount\Tasks\InstallSlapper;
-use ethaniccc\CrossOnlineCount\Tasks\QueryServer;
+use ethaniccc\SlapperPlayerCount\Tasks\InstallSlapper;
+use ethaniccc\SlapperPlayerCount\Tasks\QueryServer;
 
 class Main extends PluginBase implements Listener{
 
