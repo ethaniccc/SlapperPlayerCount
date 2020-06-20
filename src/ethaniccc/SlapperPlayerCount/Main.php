@@ -55,7 +55,7 @@ class Main extends PluginBase implements Listener{
                }
                $wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
                if($this->getConfig()->get("wpc_support") == false){
-                   if($wpc !== null || !$wpc->isDisabled()){
+                   if($wpc !== null && !$wpc->isDisabled()){
                     $this->getServer()->getPluginManager()->disablePlugin($wpc);
                    }
                }
