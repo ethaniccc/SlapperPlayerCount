@@ -4,56 +4,58 @@ namespace ethaniccc\SlapperPlayerCount\Tasks;
 
 use libpmquery\PMQuery;
 use libpmquery\PmQueryException;
-
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
-use pocketmine\utils\TextFormat;
-use pocketmine\entity\Entity;
 
 class QueryServer extends AsyncTask{
 
-    private $ip; //string
-    private $port; //int
-    private $entity; //entity
-    private $online; //online amount
-    private $max_online; //max online amount
-    private $online_message;
-    private $offline_message;
+    private $data;
+    private $onlineMsg, $offlineMsg;
 
-    public function __construct($ip, $port, $entity, string $online_message, string $offline_message){
-        $this->ip = $ip;
-        $this->port = $port;
-        $this->entity = $entity;
-        $this->online_message = $online_message;
-        $this->offline_message = $offline_message;
+    public function __construct(array $data, string $onlineMsg, string $offlineMsg){
+        $this->data = $data;
+        $this->onlineMsg = $onlineMsg;
+        $this->offlineMsg = $offlineMsg;
     }
 
     public function onRun(){
-        try{
-            $online = PMQuery::query($this->ip, $this->port)['Players'];
-            $maxonline = PMQuery::query($this->ip, $this->port)['MaxPlayers'];
-            $this->online = $online;
-            $this->max_online = $maxonline;
-        } catch (PmQueryException $e){
-            $this->online = -9999;
+        $completeData = [];
+        foreach($this->data as $data){
+            try{
+                $queryData = PMQuery::query($data["ip"], $data["port"]);
+                $onlinePlayers = $queryData["Players"];
+                $maxOnlinePlayers = $queryData["MaxPlayers"];
+                $completeData[] = ["entity" => (array) $data["entity"], "online" => true, "data" => ["online" => $onlinePlayers, "maxOnline" => $maxOnlinePlayers]];
+            } catch(PmQueryException $e){
+                $completeData[] = ["entity" => (array) $data["entity"], "online" => false];
+            }
         }
+        $this->setResult($completeData);
     }
 
     public function onCompletion(Server $server){
-        $entity = Server::getInstance()->findEntity($this->entity);
-        if($entity === null) return;
-        if($this->online !== -9999){
-            $lines = explode("\n", $entity->getNameTag());
-            $base = $this->online_message;
-            $message = str_replace(["{online}", "{max_online}"], [$this->online, $this->max_online], $base);
-            $lines[1] = $message;
-			$nametag = implode("\n", $lines);
-			$entity->setNameTag($nametag);
-        } else {
-            $lines = explode("\n", $entity->getNameTag());
-			$lines[1] = $this->offline_message;
-			$nametag = implode("\n", $lines);
-			$entity->setNameTag($nametag);
+        foreach($this->getResult() as $key => $data){
+            $level = $server->getLevelByName($data["entity"]["level"]);
+            if($level === null){
+                $server->getLogger()->debug("Unexpected null level ($key)");
+            } else {
+                $entity = $level->getEntity($data["entity"]["id"]);
+                if($entity !== null){
+                    if($data["online"]){
+                        $lines = explode("\n", $entity->getNameTag());
+                        $base = $this->onlineMsg;
+                        $message = str_replace(["{online}", "{max_online}"], [$data["data"]["online"], $data["data"]["maxOnline"]], $base);
+                        $lines[1] = $message;
+                        $nametag = implode("\n", $lines);
+                        $entity->setNameTag($nametag);
+                    } else {
+                        $lines = explode("\n", $entity->getNameTag());
+                        $lines[1] = $this->offlineMsg;
+                        $nametag = implode("\n", $lines);
+                        $entity->setNameTag($nametag);
+                    }
+                }
+            }
         }
     }
 

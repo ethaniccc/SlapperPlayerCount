@@ -7,13 +7,13 @@ class PMQuery {
 	 * @param int $port Port on the ip being queried
 	 * @param int $timeout Seconds before socket times out
 	 *
-	 * @return string[]
+	 * @return string[]|int[]
 	 * @throws PmQueryException
 	 */
 	public static function query(string $host, int $port, int $timeout = 4) {
 		$socket = @fsockopen('udp://'.$host, $port, $errno, $errstr, $timeout);
 
-		if($errno) {
+		if($errno and $socket !== false) {
 			fclose($socket);
 			throw new PmQueryException($errstr, $errno);
 		}elseif($socket === false) {
@@ -55,16 +55,19 @@ class PMQuery {
 		$data = \explode(';', $data);
 
 		return [
-			'GameName' => $data[0],
-			'HostName' => $data[1],
-			'Protocol' => $data[2],
-			'Version' => $data[3],
-			'Players' => $data[4],
-			'MaxPlayers' => $data[5],
-			'Unknown2' => $data[6], // TODO: What is this?
-			'Map' => $data[7],
-			'GameMode' => $data[8],
-			'Unknown3' => $data[9], // TODO: What is this?
+			'GameName' => $data[0] ?? null,
+			'HostName' => $data[1] ?? null,
+			'Protocol' => $data[2] ?? null,
+			'Version' => $data[3] ?? null,
+			'Players' => $data[4] ?? null,
+			'MaxPlayers' => $data[5] ?? null,
+			'ServerId' => $data[6] ?? null,
+			'Map' => $data[7] ?? null,
+			'GameMode' => $data[8] ?? null,
+			'NintendoLimited' => $data[9] ?? null,
+			'IPv4Port' => $data[10] ?? null,
+			'IPv6Port' => $data[11] ?? null,
+			'Extra' => $data[12] ?? null, // TODO: What's in this?
 		];
 	}
 }
