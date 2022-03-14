@@ -107,21 +107,19 @@ class Main extends PluginBase implements Listener {
 		if($countInfo === null) {
 			return;
 		}
-		$updateTask = true;
-		if($data !== null) {
-			$updateTask = false;
-		}
 
+		$updateTask = $data === null;
 		$type = $countInfo->getType();
 		if($type === SlapperPlayerCountEntityInfo::TYPE_SERVER) {
 			$data = ["entity" => ["id" => $entity->getId(), "level" => $entity->getWorld()->getFolderName()], "ip" => $countInfo->getIp(), "port" => $countInfo->getPort()];
 			if($updateTask) {
 				$this->getServer()->getAsyncPool()->submitTask(new QueryServer([$data], $this->getConfig()->get('server_online_message'), $this->getConfig()->get('server_offline_message')));
+				$data = [];
 			}
 		} elseif($type === SlapperPlayerCountEntityInfo::TYPE_WORLD && $this->worldPlayerCount === null) {
-			$world = $countInfo->getWorld();
-			if($countInfo->getWorld() === null) {
-				$world = $this->getServer()->getWorldManager()->getWorldByName($countInfo->getWorldName());
+			$world = $countInfo->getTargetWorld();
+			if($world === null) {
+				$world = $this->getServer()->getWorldManager()->getWorldByName($countInfo->getTargetWorldName());
 				if(!($world instanceof World)) {
 					$lines = explode("\n", $countInfo->getNameTemplate());
 					$line = 1;
@@ -158,7 +156,7 @@ class Main extends PluginBase implements Listener {
 		$nbt = $entity->namedtag;
 
 		// Check for new player count data
-		$countInfo = SlapperPlayerCountEntityInfo::fromNBT($nbt);
+		$countInfo = SlapperPlayerCountEntityInfo::fromNBT($entity->getWorld(), $nbt);
 		if($countInfo !== null) {
 			$this->trackedSlappers[$entity->getId()] = $countInfo;
 			$this->updateSlapperEntity($entity);
@@ -168,7 +166,7 @@ class Main extends PluginBase implements Listener {
 		// Check for old player count data
 		$serverString = $nbt->getString('server', '');
 		if($serverString !== '') {
-			$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($serverString);
+			$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($entity->getWorld(), $serverString);
 			if($countInfo === null) {
 				return;
 			}
@@ -190,7 +188,7 @@ class Main extends PluginBase implements Listener {
 
 	public function onSlapperCreate(SlapperCreationEvent $ev) : void {
 		$entity = $ev->getEntity();
-		$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($entity->getNameTag());
+		$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($entity->getWorld(), $entity->getNameTag());
 		if($countInfo === null) {
 			return;
 		}
