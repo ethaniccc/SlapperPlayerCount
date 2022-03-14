@@ -39,24 +39,28 @@ class QueryServer extends AsyncTask {
 			$level = $server->getWorldManager()->getWorldByName($data["entity"]["level"]);
 			if($level === null) {
 				$server->getLogger()->debug("Unexpected null level ($key)");
-			} else {
-				$entity = $level->getEntity($data["entity"]["id"]);
-				if($entity !== null) {
-					if($data["online"]) {
-						$lines = explode("\n", $entity->getNameTag());
-						$base = $this->onlineMsg;
-						$message = str_replace(["{online}", "{max_online}"], [$data["data"]["online"], $data["data"]["maxOnline"]], $base);
-						$lines[1] = $message;
-						$nametag = implode("\n", $lines);
-						$entity->setNameTag($nametag);
-					} else {
-						$lines = explode("\n", $entity->getNameTag());
-						$lines[1] = $this->offlineMsg;
-						$nametag = implode("\n", $lines);
-						$entity->setNameTag($nametag);
-					}
-				}
+				continue;
 			}
+
+			$entity = $level->getEntity($data["entity"]["id"]);
+			if($entity === null) {
+				$server->getLogger()->debug("Unexpected null entity ($key)");
+				continue;
+			}
+
+			$lines = explode("\n", $entity->getNameTag());
+			if($data['online'] === false) {
+				$lines[1] = $this->offlineMsg;
+				$nametag = implode("\n", $lines);
+				$entity->setNameTag($nametag);
+				continue;
+			}
+
+			$base = $this->onlineMsg;
+			$message = str_replace(["{online}", "{max_online}"], [$data["data"]["online"], $data["data"]["maxOnline"]], $base);
+			$lines[1] = $message;
+			$nametag = implode("\n", $lines);
+			$entity->setNameTag($nametag);
 		}
 	}
 
