@@ -95,7 +95,7 @@ class Main extends PluginBase implements Listener {
 	 * @param array|null                $data
 	 */
 	public function updateSlapperEntity(Entity $entity, ?array &$data = null) : void {
-		$countInfo = $this->trackedSlappers[$entity->getId()];
+		$countInfo = $this->trackedSlappers[$entity->getId()] ?? null;
 		if($countInfo === null) {
 			return;
 		}
