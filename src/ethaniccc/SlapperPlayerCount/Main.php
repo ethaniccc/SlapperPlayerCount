@@ -70,12 +70,7 @@ class Main extends PluginBase implements Listener {
 	public function updateSlapper() : void {
 		$data = [];
 		foreach($this->trackedSlappers as $id => $countInfo) {
-			$world = $countInfo->getWorld();
-			if($world === null) {
-				continue;
-			}
-
-			$entity = $world->getEntity($id);
+			$entity = $countInfo->getWorld()->getEntity($id);
 			if($entity === null) {
 				continue;
 			}
