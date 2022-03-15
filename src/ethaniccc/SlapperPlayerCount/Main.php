@@ -42,9 +42,10 @@ class Main extends PluginBase implements Listener {
 				$this->updateSlapper();
 			}), $updateTicks);
 
-			$this->getServer()->getPluginManager()->registerEvents($this, $this);
+			$server = $this->getServer();
+			$server->getPluginManager()->registerEvents($this, $this);
 
-			foreach($this->getServer()->getWorldManager()->getWorlds() as $world) {
+			foreach($server->getWorldManager()->getWorlds() as $world) {
 				foreach($world->getEntities() as $entity) {
 					if(!($entity instanceof SlapperEntity)) {
 						continue;
@@ -54,13 +55,9 @@ class Main extends PluginBase implements Listener {
 				}
 			}
 
-			$wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
-			if($this->getConfig()->get("wpc_support") == false) {
-				if($wpc !== null && !$wpc->isDisabled()) {
-					$this->getServer()->getPluginManager()->disablePlugin($wpc);
-				}
-			} elseif($this->getConfig()->get("wpc_support") == true) {
-				if($wpc == null || $wpc->isDisabled()) {
+			$wpc = $server->getPluginManager()->getPlugin("WorldPlayerCount");
+			if($this->getConfig()->get("wpc_support") === true) {
+				if($wpc === null || !$server->getPluginManager()->isPluginEnabled($wpc)) {
 					$this->getLogger()->debug("WorldPlayerCount support is enabled, but does not exist (or is disabled) on your server.");
 				} else {
 					$this->getLogger()->debug("WorldPlayerCount support is enabled, and world querying will depend on it.");
