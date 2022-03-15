@@ -58,8 +58,9 @@ class SlapperPlayerCountEntityInfo {
 	/**
 	 * Construct a new world player count instance.
 	 *
+	 * @param \pocketmine\world\World        $world
 	 * @param string                         $nameTemplate
-	 * @param \pocketmine\world\World|string $world
+	 * @param \pocketmine\world\World|string $targetWorld
 	 *
 	 * @return static|null
 	 */
