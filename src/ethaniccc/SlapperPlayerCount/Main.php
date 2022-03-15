@@ -38,7 +38,7 @@ class Main extends PluginBase implements Listener {
 			$updateTicks = 100;
 		}
 		$this->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use ($updateTicks) : void {
-			$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() use ($updateTicks) : void {
+			$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void {
 				$this->updateSlapper();
 			}), $updateTicks);
 
