@@ -38,13 +38,14 @@ class Main extends PluginBase implements Listener {
 			$updateTicks = 100;
 		}
 		$this->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use ($updateTicks) : void {
-			$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() use ($updateTicks) : void {
+			$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void {
 				$this->updateSlapper();
 			}), $updateTicks);
 
-			$this->getServer()->getPluginManager()->registerEvents($this, $this);
+			$server = $this->getServer();
+			$server->getPluginManager()->registerEvents($this, $this);
 
-			foreach($this->getServer()->getWorldManager()->getWorlds() as $world) {
+			foreach($server->getWorldManager()->getWorlds() as $world) {
 				foreach($world->getEntities() as $entity) {
 					if(!($entity instanceof SlapperEntity)) {
 						continue;
@@ -54,13 +55,9 @@ class Main extends PluginBase implements Listener {
 				}
 			}
 
-			$wpc = $this->getServer()->getPluginManager()->getPlugin("WorldPlayerCount");
-			if($this->getConfig()->get("wpc_support") == false) {
-				if($wpc !== null && !$wpc->isDisabled()) {
-					$this->getServer()->getPluginManager()->disablePlugin($wpc);
-				}
-			} elseif($this->getConfig()->get("wpc_support") == true) {
-				if($wpc == null || $wpc->isDisabled()) {
+			$wpc = $server->getPluginManager()->getPlugin("WorldPlayerCount");
+			if($this->getConfig()->get("wpc_support") === true) {
+				if($wpc === null || !$server->getPluginManager()->isPluginEnabled($wpc)) {
 					$this->getLogger()->debug("WorldPlayerCount support is enabled, but does not exist (or is disabled) on your server.");
 				} else {
 					$this->getLogger()->debug("WorldPlayerCount support is enabled, and world querying will depend on it.");
@@ -73,12 +70,7 @@ class Main extends PluginBase implements Listener {
 	public function updateSlapper() : void {
 		$data = [];
 		foreach($this->trackedSlappers as $id => $countInfo) {
-			$world = $countInfo->getWorld();
-			if($world === null) {
-				continue;
-			}
-
-			$entity = $world->getEntity($id);
+			$entity = $countInfo->getWorld()->getEntity($id);
 			if($entity === null) {
 				continue;
 			}
@@ -103,25 +95,23 @@ class Main extends PluginBase implements Listener {
 	 * @param array|null                $data
 	 */
 	public function updateSlapperEntity(Entity $entity, ?array &$data = null) : void {
-		$countInfo = $this->trackedSlappers[$entity->getId()];
+		$countInfo = $this->trackedSlappers[$entity->getId()] ?? null;
 		if($countInfo === null) {
 			return;
 		}
-		$updateTask = true;
-		if($data !== null) {
-			$updateTask = false;
-		}
 
+		$updateTask = $data === null;
 		$type = $countInfo->getType();
 		if($type === SlapperPlayerCountEntityInfo::TYPE_SERVER) {
 			$data = ["entity" => ["id" => $entity->getId(), "level" => $entity->getWorld()->getFolderName()], "ip" => $countInfo->getIp(), "port" => $countInfo->getPort()];
 			if($updateTask) {
 				$this->getServer()->getAsyncPool()->submitTask(new QueryServer([$data], $this->getConfig()->get('server_online_message'), $this->getConfig()->get('server_offline_message')));
+				$data = [];
 			}
 		} elseif($type === SlapperPlayerCountEntityInfo::TYPE_WORLD && $this->worldPlayerCount === null) {
-			$world = $countInfo->getWorld();
-			if($countInfo->getWorld() === null) {
-				$world = $this->getServer()->getWorldManager()->getWorldByName($countInfo->getWorldName());
+			$world = $countInfo->getTargetWorld();
+			if($world === null) {
+				$world = $this->getServer()->getWorldManager()->getWorldByName($countInfo->getTargetWorldName());
 				if(!($world instanceof World)) {
 					$lines = explode("\n", $countInfo->getNameTemplate());
 					$line = 1;
@@ -158,7 +148,7 @@ class Main extends PluginBase implements Listener {
 		$nbt = $entity->namedtag;
 
 		// Check for new player count data
-		$countInfo = SlapperPlayerCountEntityInfo::fromNBT($nbt);
+		$countInfo = SlapperPlayerCountEntityInfo::fromNBT($entity->getWorld(), $nbt);
 		if($countInfo !== null) {
 			$this->trackedSlappers[$entity->getId()] = $countInfo;
 			$this->updateSlapperEntity($entity);
@@ -168,7 +158,7 @@ class Main extends PluginBase implements Listener {
 		// Check for old player count data
 		$serverString = $nbt->getString('server', '');
 		if($serverString !== '') {
-			$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($serverString);
+			$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($entity->getWorld(), $serverString);
 			if($countInfo === null) {
 				return;
 			}
@@ -190,7 +180,7 @@ class Main extends PluginBase implements Listener {
 
 	public function onSlapperCreate(SlapperCreationEvent $ev) : void {
 		$entity = $ev->getEntity();
-		$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($entity->getNameTag());
+		$countInfo = SlapperPlayerCountEntityInfo::fromNameTag($entity->getWorld(), $entity->getNameTag());
 		if($countInfo === null) {
 			return;
 		}

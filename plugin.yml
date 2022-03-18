@@ -1,6 +1,6 @@
 ---
 name: SlapperPlayerCount
-version: 3.0.0
+version: 3.1.0
 main: ethaniccc\SlapperPlayerCount\Main
 description: Get the amount of players on a world or server using Slapper!
 api: 4.0.0
